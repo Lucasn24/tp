@@ -710,20 +710,25 @@ testers are expected to do more *exploratory* testing.
 
 ### Deleting a person
 
-1. Deleting a person while all persons are being shown
+**Command**: `delete`
 
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+**Prerequisites**: Ensure at least one person exists in the contact book.
 
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+1. Deleting a person with a <u>valid index</u>
+   * **Test case:** `delete i/1 `
+   * **Expected:** Confirmation message shown that person at index 1 is deleted from the list.
 
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+2. Deleting a person with <u>out of bounds index</u>
+   * **Test case:** `delete i/0`
+   * **Expected:** Error message shown indicating invalid index.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
+3. Deleting a person <u>without any index</u>
+   * **Test case:** `delete`
+   * **Expected:** Error message shown indicating invalid command format.
 
-1. _{ more test cases …​ }_
+4. Deleting a person with a valid index with <u>additional prefixes</u>
+   * **Test case:** `delete i/1 n/John`
+   * **Expected:** Error message shown indicating invalid command format.
 
 ### Add category(s) to a person
 
@@ -774,6 +779,111 @@ testers are expected to do more *exploratory* testing.
 5. Deleting a category from a <u>non-existent person</u>
   * Test case: `deleteCat i/999 c/family`
   * Expected: Error message shown indicating person not found.
+
+### Add interview(s) to a person
+
+**Command**: `addInterview`
+
+**Prerequisites**: Ensure at least one person exists in the contact book.
+1. Adding a <u>valid interview</u> to a person
+   * **Test case:** `addInterview i/1 h/Interview with ABC Corp d/2024-10-10 t/14:00 l/123, Business St, #02-25`
+   * **Expected:** Confirmation message shown that the interview has been added to the person at index 1.
+
+2. Adding interview with <u>invalid index</u>
+   * **Test case:** `addInterview i/-1 h/Interview with ABC Corp d/2024-10-10 t/14:00 l/123, Business St, #02-25`
+   * **Expected:** Error message shown indicating invalid command format.
+
+3. Adding interview with <u>empty header</u> to a person
+   * **Test case:** `addInterview i/1 h/ d/2024-10-10 t/14:00 l/123, Business St, #02-25`
+   * **Expected:** Error message shown indicating header cannot be blank.
+
+4. Adding interview with <u>invalid date</u> to a person
+    * **Test case:** `addInterview i/1 h/Interview with ABC Corp d/24-10-10 t/14:00 l/123, Business St, #02-25`
+    * **Expected:** Error message shown indicating invalid date.
+
+5. Adding interview with <u>invalid time</u> to a person
+    * **Test case:** `addInterview i/1 h/Interview with ABC Corp d/2024-10-10 t/1400 l/123, Business St, #02-25`
+    * **Expected:** Error message shown indicating invalid time.
+
+6. Adding interview with <u>empty location</u> to a person
+    * **Test case:** `addInterview i/1 h/Interview with ABC Corp d/2024-10-10 t/14:00 l/`
+    * **Expected:** Error message shown indicating location cannot be blank.
+
+7. Adding interview with <u>missing parameters</u> to a person
+    * **Test case:** `addInterview i/1 h/Interview with ABC Corp d/2024-10-10 t/14:00`
+    * **Expected:** Error message shown indicating invalid command format.
+
+8. Adding interview with <u>additional parameters</u> to a person
+    * **Test case:** `addInterview i/1 h/Interview with ABC Corp d/2024-10-10 t/14:00 l/123, Business St, #02-25 c/formal`
+    * **Expected:** Error message shown indicating invalid command format.
+
+### Delete interview(s) to a person
+
+**Command**: `deleteInterview`
+
+**Prerequisites**: Ensure at least one person exists in the contact book.
+
+1. Deleting a <u>valid interview</u> from a person
+    * **Test case:** `deleteInterview i/1 v/2`
+    * **Expected:** Confirmation message shown that the interview has been deleted from the person at 1.
+
+2. Deleting an interview with a <u>invalid person index</u>
+    * **Test case:** `deleteInterview i/0 v/2`
+    * **Expected:** Error message shown indicating invalid index.
+
+3. Deleting an interview with a <u>invalid interview index</u>
+    * **Test case:** `deleteInterview i/1 v/-2`
+    * **Expected:** Error message shown indicating invalid index.
+
+4. Deleting an interview with a <u>missing parameters</u>
+    * **Test case:** `deleteInterview i/1`
+    * **Expected:** Error message shown indicating invalid command format.
+
+5. Deleting an interview with a <u>additional parameters</u>
+    * **Test case:** `deleteInterview i/1 v/1 h/Interview with ABC Corps`
+    * **Expected:** Error message shown indicating invalid command format.
+
+### List Interview(s) of a person
+
+**Command**: `listInterview`
+
+**Prerequisites**: Ensure at least one person exists in the contact book.
+
+1. Viewing the <u>list of interview(s)</u> in the contact book
+    * **Test case:** `listInterview i/1`
+    * **Expected:** Confirmation message showing the list of interviews of the person at index 1.
+
+2. Viewing the <u>list of interview(s)</u> in the contact book when the person does not have any interviews
+    * **Test case:** `listInterview i/1`
+    * **Expected:** Confirmation message showing no interviews scheduled.
+
+3. Viewing the list of interviews with an <u>invalid person index</u>
+    * **Test case:** `listInterview i/0`
+    * **Expected:** Error message shown indicating invalid index.
+
+4. Viewing the list of interviews with an <u>missing index</u>
+    * **Test case:** `listInterview`
+    * **Expected:** Error message shown indicating invalid command format.
+
+5. Viewing the list of interviews with an <u>additional parameters</u>
+    * **Test case:** `listInterview i/1 v/2`
+    * **Expected:** Error message shown indicating invalid command format.
+
+### Next Interview of a person
+
+**Command**: `nextInterview`
+
+1. Viewing the <u>next interview</u> in the contact book
+    * **Test case:** `nextInterview`
+    * **Expected:** Confirmation message showing the next upcoming interview in the contact book.
+
+2. Viewing the <u>next interview</u> in the contact book when there is no upcoming interview
+    * **Test case:** `nextInterview`
+    * **Expected:** Confirmation message showing that there is no upcoming interview in the contact book.
+
+3. Viewing the next interview with a <u>additional parameter</u>
+    * **Test case:** `nextInterview i/2`
+    * **Expected:** Error message shown indicating that it does not take any arguments.
 
 ### Saving data
 
